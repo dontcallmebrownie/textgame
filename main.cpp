@@ -44,13 +44,15 @@ int init()
         cout << "ERROR: DATA FILE MISSING\n";
         error = 1;
     }
-    
+   
+    // get loading animation frames 
     getLoadingFrames();
 
+    // Load game menu banner 
     loadBanner();
     
     // Get game data
-
+    // TODO: verb dictionary
  
 return error;
 }
@@ -58,8 +60,10 @@ return error;
 int main (int argc, char* argv[])
 {
     int error = 0;
+    char opt;
+    int valid = 0;
     
-     cout << "Wecome!\nPlease wait while game loads.\n";
+    cout << "Wecome!\nPlease wait while game loads.\n";
 
     // Initialize everything
     if (init())
@@ -69,18 +73,55 @@ int main (int argc, char* argv[])
 
     loadingAnim();
     printBanner();
-    
-    // Do stuff here
-     while(!quit)
+//    
+    // Handle main menu stuff first    
+    while (!valid) 
     {
-        getInput();
-        for(int i = 0; i != parsedInput.size(); i++)
+        cout << "\n\n\tPlease select a menu option.\n:> ";
+        cin >> opt;
+        
+        if (opt < '0' || opt > '9')
         {
-            cout << parsedInput[i] << "\n";
-                     
+            cout << "Please enter a number\n";
+            continue;
         }
 
+        switch(opt)
+        {
+            case '1':
+                valid = true;
+                break;
+            case '2':
+                cout << "this function coming soon!\n";
+                break;
+             case '3':
+                quit = 1;
+                valid = true;
+                break;
+            default:
+                cout << "not a valid choice.\n";
+                break;
+        }
+    }
+
+    cin.ignore();
+
+    // Actual game loop get input->do stuff -> print -> repeat
+    while(!quit)
+    {
+       
+        // Clear the storage vector so we know it's empty
         parsedInput.clear();
+        
+        getInput();
+
+
+        for(int i = 0; i < parsedInput.size(); i++)
+        {
+            cout << parsedInput[i] << "\n";
+                                 
+        }
+        
     }
 
 
@@ -96,14 +137,13 @@ return error;
 
 void getInput()
 {
-    string raw = "";
+    string raw;
 
 
     // Wait for input
-
     cout << ":> ";
     getline(cin, raw, '\n');
-
+    
     // Parse Input
     parse(mkUpper(raw), &parsedInput);
 
@@ -112,6 +152,7 @@ void getInput()
         quit = 1;
 
     }    
+
 }
 
 
@@ -158,7 +199,7 @@ void loadingAnim()
     while (playing)
     {
         cout << load[i] << flush;
-        usleep(250000);
+//        usleep(250000);
         i++;
 
         if (i > 5)

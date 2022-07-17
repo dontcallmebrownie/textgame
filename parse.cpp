@@ -46,6 +46,7 @@ void prepareStr(std::string *str)
 {
 
   int strsize = int(str->size());
+      
 
   for(int i = 0; i < strsize; i++)
   {
