@@ -4,6 +4,8 @@ default:
 run:
 	./tg.bin
 
-
 clean:
 	rm tg.bin
+
+val:
+	valgrind ./tg.bin

@@ -11,69 +11,102 @@ using namespace std;
 
 // Files for I/O
 ifstream gData;
+fstream sData;
+string dataFile = "./rsc/data";
+string saveFile = "./save/save";
 
 // Function protos
 int init();
 int cleanUp();
 void  getInput();
 int parser(string);
-
+void printCredits();
+void loadCredits();
 
 int getLoadingFrames();
-void loadingAnim();
+void loadingAnim(string, int);
 void loadBanner();
 void printBanner();
 
 // Loaded Data storage
 char load[5];
-string banner[11];
-
+string banner[14]; // The lines vary in size (in bytes) 
+                   //  extra element in array to account for the memory used
+string credits[16];
+string verbs[18];
 
 // User input storage
 vector<string> parsedInput;
+
 int quit = 0;
 
 int init()
 {
     int error = 0;
 
-    gData.open("./rsc/data");
+    gData.open(dataFile);
     
     if (!gData.is_open())
     {
         cout << "ERROR: DATA FILE MISSING\n";
         error = 1;
-    }
+    }    
    
     // get loading animation frames 
     getLoadingFrames();
 
     // Load game menu banner 
     loadBanner();
-    
+
+    sData.open(saveFile); // Test for existing file
+    if (!sData.is_open())
+    {
+        // If no file
+        cout << "No save data found. ";
+        sData.open(saveFile, fstream::in | fstream::out | fstream::trunc);
+        sData << "\n";
+        loadingAnim("Creating", 2);
+    }    
+    else 
+    {
+        // If exists
+        sData.close();
+        sData.open(saveFile, fstream::in | fstream::out | fstream::trunc);
+    }
+
+    loadCredits();
+
+
     // Get game data
     // TODO: verb dictionary
+    // TODO: game scenes
  
 return error;
 }
 
 int main (int argc, char* argv[])
 {
+
     int error = 0;
-    char opt;
+    char opt = 0;
     int valid = 0;
     
-    cout << "Wecome!\nPlease wait while game loads.\n";
 
-    // Initialize everything
-    if (init())
+    if(!gData.is_open())
     {
-        cout << "ERROR: INIT\n";
+        cout << "Wecome!\nPlease wait while game loads.\n";
+
+        // Initialize everything
+        if (init())
+        {
+            cout << "ERROR: INIT\n";
+        }
+
+        loadingAnim("Loading",3);
     }
 
-    loadingAnim();
     printBanner();
-//    
+    
     // Handle main menu stuff first    
     while (!valid) 
     {
@@ -95,11 +128,17 @@ int main (int argc, char* argv[])
                 cout << "this function coming soon!\n";
                 break;
              case '3':
+                printCredits();
+                loadingAnim("", 4);
+                printBanner();
+                break; 
+             case '4':
                 quit = 1;
                 valid = true;
                 break;
             default:
                 cout << "not a valid choice.\n";
+                printBanner();
                 break;
         }
     }
@@ -149,13 +188,11 @@ void getInput()
 
     if (parsedInput[0] == "QUIT")
     {
-        quit = 1;
+        main(0,0);
 
     }    
 
 }
-
-
 
 int cleanUp()
 {
@@ -166,7 +203,12 @@ int cleanUp()
         gData.close();
     }
     
-    if (gData.is_open())
+    if (sData.is_open())
+    {
+        sData.close();
+    }
+    
+    if (gData.is_open() || sData.is_open())
     {
         cout << "ERROR: DATA FILE DID NOT CLOSE\n";
         error = 1;
@@ -190,16 +232,16 @@ int getLoadingFrames()
 return error;
 }
 
-void loadingAnim()
+void loadingAnim(string say, int len)
 {
-    int playing = 50;
+    int playing = len * 5;
     int i = 5;
-    cout << "Loading...   ";
+    cout << say << "... ";
 
     while (playing)
     {
         cout << load[i] << flush;
-//        usleep(250000);
+        usleep(250000);
         i++;
 
         if (i > 5)
@@ -214,17 +256,57 @@ void loadingAnim()
     cout << "\b" << "Done\n" << endl;
 }
 
+
+/*
+// Load and print array functions should be made generic
+//  These could have been copy/pasted with no issue so 
+//  I need to refactor this
+
+
+int loadArray(file, &array, delim);
+
+int printArray(&array, size); ?, offset ?);
+
+
+
+
+
+
+
+*/
+
+
+
 void loadBanner()
 {
-     for(int i = 0; i <= 10; i++)
+     for(int i = 0; i <= 13; i++)
     {
-       getline( gData, banner[i]);
+       getline( gData, banner[i], '\n');
     }    
 }
+
 void printBanner()
 {
-    for (int i = 0; i <= 10; i++)
+    for (int i = 0; i <= 13; i++)
     {
         cout << banner[i] << endl;
     }
 }
+
+void loadCredits()
+{
+    for (int i = 0; i <= 15; i++)
+    {
+        getline(gData, credits[i], '\n');
+    }
+}
+
+void printCredits()
+{
+    for (int i = 0; i <= 15; i++) 
+    {
+        cout << credits[i] << endl;
+    }
+
+}
+
