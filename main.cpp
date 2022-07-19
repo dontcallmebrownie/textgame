@@ -33,7 +33,7 @@ char load[5];
 string banner[14]; // The lines vary in size (in bytes) 
                    //  extra element in array to account for the memory used
 string credits[16];
-string verbs[18];
+string verbs[20];
 
 // User input storage
 vector<string> parsedInput;
@@ -79,6 +79,11 @@ int init()
 
     // Get game data
     // TODO: verb dictionary
+    for (int i = 0; i < 19; i++)
+    {
+        gData >> verbs[i];
+        cout << verbs[i] << endl;  
+    } 
     // TODO: game scenes
  
 return error;
@@ -188,7 +193,24 @@ void getInput()
 
     if (parsedInput[0] == "QUIT")
     {
-        main(0,0);
+        if (parsedInput.size() > 1)
+        {
+            if (parsedInput[1] == "NOW")
+            {
+                parsedInput.clear();
+                quit = 1;
+            }
+            else 
+            {
+                parsedInput.clear();
+                main(0, 0);
+            }
+        }
+        else
+        {
+            parsedInput.clear();
+            main(0,0);
+        }
 
     }    
 
@@ -197,6 +219,8 @@ void getInput()
 int cleanUp()
 {
     int error = 0;
+    
+    parsedInput.clear();    
     
     if (gData.is_open())
     {    
