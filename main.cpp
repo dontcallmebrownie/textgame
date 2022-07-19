@@ -93,7 +93,7 @@ int main (int argc, char* argv[])
 {
 
     int error = 0;
-    char opt = 0;
+    string opt;
     int valid = 0;
     
 
@@ -118,13 +118,13 @@ int main (int argc, char* argv[])
         cout << "\n\n\tPlease select a menu option.\n:> ";
         cin >> opt;
         
-        if (opt < '0' || opt > '9')
+        if (opt[0] < '0' || opt[0] > '9')
         {
             cout << "Please enter a number\n";
             continue;
         }
 
-        switch(opt)
+        switch(opt[0])
         {
             case '1':
                 valid = true;
