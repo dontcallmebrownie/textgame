@@ -82,7 +82,7 @@ int init()
     for (int i = 0; i < 19; i++)
     {
         gData >> verbs[i];
-        cout << verbs[i] << endl;  
+//        cout << verbs[i] << endl;  
     } 
     // TODO: game scenes
     
