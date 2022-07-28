@@ -181,7 +181,7 @@ int main (int argc, char* argv[])
     while(!quit)
     {
        
-        // Clear the storage vector so we know it's empty
+        // Clear the input vector so we know it's empty
         parsedInput.clear();
         
         getInput();
